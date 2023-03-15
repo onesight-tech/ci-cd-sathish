@@ -1,0 +1,69 @@
+# name: Push to ACR
+# on:
+#   workflow_dispatch:
+# ####   push:
+# ####      branches:
+# ####       - main
+#       # Set up environment variables
+#       ############################(Above Workflow_dispatch command)
+# #env:
+#   # Name of your ACR instance
+#   #REGISTRY_NAME: cicdpipeline.azurecr.io
+  
+#   # Name of your AKS cluster
+#   #CLUSTER_NAME: myaks
+  
+#   # Name of your resource group where ACR and AKS are located
+#   #RESOURCE_GROUP: rg-pipeline-eus-01
+  
+#   # Name of your Docker image 
+#   #IMAGE_NAME: python-imdb
+    
+# jobs:
+#   build-and-push:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
+#       - name: Login to Azure Container Registry
+#         uses: azure/docker-login@v1
+#         with:
+#           login-server: cicdpipeline.azurecr.io
+#           username: ${{ secrets.ACR_USERNAME }}
+#           password: ${{ secrets.ACR_PASSWORD }}
+#       - name: Build and push Docker image
+         
+#         run: |
+#           docker build -t cicdpipeline.azurecr.io/python:latest -f "C:\Users\onesi\ci-cd_sathish\src\Dockerfile" C:\Users\onesi\ci-cd_sathish\src
+#           docker push cicdpipeline.azurecr.io/python:latest
+          
+name: Build and Push Docker Image
+
+on:
+  workflow_dispatch:
+#   push:
+#     branches:
+#       - main
+  
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: cicdpipeline.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v2
+        with:
+          context: /home/runner/work/ci-cd_sathish/src
+          push: true
+          tags: |
+            cicdpipeline.azurecr.io/python-imdb:${{ github.run_number }}
+
