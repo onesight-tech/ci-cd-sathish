@@ -76,10 +76,11 @@ jobs:
       - name: Install Helm
         run: |
          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+         
+      - name: Configure kubectl
+        uses: Azure/k8s-set-context@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          cluster-name: aks-cluster-01
+          namespace: helmdemo
         
-#       - name: Install Helm chart
-#         run: |
-#           helm repo add myrepo https://example.com/charts
-#           helm upgrade --install my-app myrepo/my-app \
-#           --set replicas=2 \
-#           --set ingress.host=myapp.examplesathish.com
