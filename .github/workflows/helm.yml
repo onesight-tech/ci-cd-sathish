@@ -49,7 +49,7 @@ jobs:
       uses: azure/helm@v1.2.3
       with:
         command: upgrade
-        arguments: --install $HELM_CHART ./helm-chart
+        arguments: --install $HELM_CHART "D:\Github-action-helm\pythonchart"
         namespace: default
         set_values: |
           image.repository=$ACR_NAME.azurecr.io/$DOCKER_IMAGE
