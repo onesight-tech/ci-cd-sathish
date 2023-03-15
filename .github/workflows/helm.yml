@@ -72,9 +72,6 @@ jobs:
           push: true
           tags: |
             cicdpipeline.azurecr.io/helm:${{ github.run_number }}
-      #(helm)      
-      - name: Install Helm
-        run: |
-         curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+      
          
      
