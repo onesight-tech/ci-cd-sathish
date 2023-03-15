@@ -51,6 +51,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+  ##(helm)
+      - name: Configure kubectl
+        uses: Azure/k8s-set-context@v1
+        with:
+           creds: ${{ secrets.AZURE_CREDENTIALS }}
+           cluster-name: aks-cluster-01
+           namespace: demohelm
       
       - name: Login to Azure Container Registry
         uses: azure/docker-login@v1
@@ -66,4 +73,14 @@ jobs:
           push: true
           tags: |
             cicdpipeline.azurecr.io/helm:${{ github.run_number }}
-
+      #(helm)      
+      - name: Install Helm
+        run: |
+         curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+        
+      - name: Install Helm chart
+        run: |
+          helm repo add myrepo https://example.com/charts
+          helm upgrade --install my-app myrepo/my-app \
+          --set replicas=2 \
+          --set ingress.host=myapp.examplesathish.com
