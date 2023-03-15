@@ -62,7 +62,7 @@ jobs:
       - name: Build and push Docker images
         uses: docker/build-push-action@v2
         with:
-          context: /home/runner/work/ci-cd_sathish/src
+          context: /home/runner/work/ci-cd-sathish/src
           push: true
           tags: |
             cicdpipeline.azurecr.io/helm:${{ github.run_number }}
