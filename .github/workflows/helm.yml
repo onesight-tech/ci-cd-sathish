@@ -79,8 +79,10 @@ jobs:
          
       - name: Configure kubectl
         uses: Azure/k8s-set-context@v1
+
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+          kubeconfig: ./kubeconfig.yaml 
           cluster-name: aks-cluster-01
           namespace: helmdemo
         
