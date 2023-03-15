@@ -65,5 +65,5 @@ jobs:
           context: /home/runner/work/ci-cd_sathish/src
           push: true
           tags: |
-            cicdpipeline.azurecr.io/python-imdb:${{ github.run_number }}
+            cicdpipeline.azurecr.io/helm:${{ github.run_number }}
 
