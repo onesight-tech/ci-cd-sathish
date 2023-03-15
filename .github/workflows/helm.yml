@@ -1,77 +1,55 @@
-# name: Push to ACR
-# on:
-#   workflow_dispatch:
-# ####   push:
-# ####      branches:
-# ####       - main
-#       # Set up environment variables
-#       ############################(Above Workflow_dispatch command)
-# #env:
-#   # Name of your ACR instance
-#   #REGISTRY_NAME: cicdpipeline.azurecr.io
-  
-#   # Name of your AKS cluster
-#   #CLUSTER_NAME: myaks
-  
-#   # Name of your resource group where ACR and AKS are located
-#   #RESOURCE_GROUP: rg-pipeline-eus-01
-  
-#   # Name of your Docker image 
-#   #IMAGE_NAME: python-imdb
-    
-# jobs:
-#   build-and-push:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v2
-#       - name: Login to Azure Container Registry
-#         uses: azure/docker-login@v1
-#         with:
-#           login-server: cicdpipeline.azurecr.io
-#           username: ${{ secrets.ACR_USERNAME }}
-#           password: ${{ secrets.ACR_PASSWORD }}
-#       - name: Build and push Docker image
-         
-#         run: |
-#           docker build -t cicdpipeline.azurecr.io/python:latest -f "C:\Users\onesi\ci-cd_sathish\src\Dockerfile" C:\Users\onesi\ci-cd_sathish\src
-#           docker push cicdpipeline.azurecr.io/python:latest
-          
-name: Build and Push Docker Image
+name: Deploy to Azure Kubernetes Service
 
 on:
-  workflow_dispatch:
-#   push:
-#     branches:
-#       - main
+  push:
+    branches:
+      - main
+
+env:
+  RESOURCE_GROUP: rg-cicdpipeline
+  AKS_CLUSTER: aks-cicdpipeline
+  ACR_NAME: acrcicd
+  DOCKER_IMAGE: python-imdb
+  HELM_CHART: pythonchart
+
 jobs:
-  build-and-push:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-#   ##(helm)
-#       - name: Configure kubectl
-#         uses: Azure/k8s-set-context@v1
-#         with:
-#            creds: ${{ secrets.AZURE_CREDENTIALS }}
-#            cluster-name: aks-cluster-01
-#            namespace: demohelm
-      
-      - name: Login to Azure Container Registry
-        uses: azure/docker-login@v1
-        with:
-          login-server: cicdpipeline.azurecr.io
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
-      
-      - name: Build and push Docker images
-        uses: docker/build-push-action@v2
-        with:
-          context: /home/runner/work/ci-cd-sathish/ci-cd-sathish/src
-          push: true
-          tags: |
-            cicdpipeline.azurecr.io/helm:${{ github.run_number }}
-      
-         
-     
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Azure CLI
+      uses: azure/setup-azure-cli@v1
+      with:
+        scope: "subscription"
+        azcliversion: "latest"
+
+    - name: Create resource group
+      run: az group create --name $RESOURCE_GROUP --location eastus
+
+    - name: Create AKS cluster
+      run: |
+        az aks create --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER --node-count 1 --generate-ssh-keys
+        az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER
+
+    - name: Login to ACR
+      run: az acr login --name $ACR_NAME
+
+    - name: Build and push Docker image
+      env:
+        DOCKER_BUILDKIT: 1
+      run: |
+        docker build -t $DOCKER_IMAGE .
+        docker tag $DOCKER_IMAGE $ACR_NAME.azurecr.io/$DOCKER_IMAGE
+        docker push $ACR_NAME.azurecr.io/$DOCKER_IMAGE
+
+    - name: Deploy with Helm
+      uses: azure/helm@v1.2.3
+      with:
+        command: upgrade
+        arguments: --install $HELM_CHART ./helm-chart
+        namespace: default
+        set_values: |
+          image.repository=$ACR_NAME.azurecr.io/$DOCKER_IMAGE
