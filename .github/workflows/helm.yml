@@ -42,7 +42,7 @@ jobs:
       env:
         DOCKER_BUILDKIT: 1
       run: |
-        docker build -t $DOCKER_IMAGE .
+        docker build -t $DOCKER_IMAGE "/home/runner/work/ci-cd-sathish/ci-cd-sathish/src"
         docker tag $DOCKER_IMAGE $ACR_NAME.azurecr.io/$DOCKER_IMAGE
         docker push $ACR_NAME.azurecr.io/$DOCKER_IMAGE
 
