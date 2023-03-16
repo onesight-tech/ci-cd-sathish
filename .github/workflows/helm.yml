@@ -68,6 +68,10 @@ jobs:
         uses: azure/k8s-set-context@v1
         with:
          kubeconfig: ${{ secrets.KUBECONFIG }}
+         
+     
+      - name: Get AKS credentials
+        run: az aks get-credentials --resource-group rg-cicdpipeline-eus-action --name aks-cluster-pipeline    
  #        
       - name: Build and push Docker images
         uses: docker/build-push-action@v2
