@@ -55,13 +55,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
-      - name: Install kubectl
-        uses: dawidd6/action-install-kubectl@v1
-
-      - name: Create Namespace
-        run: kubectl create namespace demochart
-      
       - name: Login to Azure Container Registry
         uses: azure/docker-login@v1
         with:
