@@ -46,7 +46,6 @@ on:
 #       - main
  
 env:
-  KUBECONFIG: ${{ secrets.KUBECONFIG }}
   HELM_CHART: pythonchart
   HELM_NAMESPACE: demochart
  
@@ -64,11 +63,6 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
  #         
-      - name: Configure Kubectl
-        uses: azure/k8s-set-context@v1
-        with:
-         kubeconfig: ${{ secrets.KUBECONFIG }}
-         
       - name: Login to Azure
         uses: Azure/login@v1
         with:
