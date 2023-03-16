@@ -46,7 +46,7 @@ on:
 #       - main
  
 env:
- # KUBECONFIG: ${{ secrets.KUBECONFIG }}
+  KUBECONFIG: ${{ secrets.KUBECONFIG }}
   HELM_CHART: pythonchart
   HELM_NAMESPACE: demochart
  
@@ -63,7 +63,7 @@ jobs:
           login-server: cicdpipeline.azurecr.io
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
-      
+
       - name: Build and push Docker images
         uses: docker/build-push-action@v2
         with:
