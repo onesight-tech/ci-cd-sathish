@@ -70,7 +70,7 @@ jobs:
           context: /home/runner/work/ci-cd-sathish/ci-cd-sathish/src #ci-cd_sathish two times mention pannaum
           push: true
           tags: |
-            cicdpipeline.azurecr.io/python-imdb:${{ github.run_number }}
+            cicdpipeline.azurecr.io/python:${{ github.run_number }}
       - name: Setup Helm and Kubectl
         uses: azure/setup-helm@v1
         with:
