@@ -44,7 +44,12 @@ on:
 #   push:
 #     branches:
 #       - main
-  
+ 
+env:
+  KUBECONFIG: ${{ secrets.KUBECONFIG }}
+  HELM_CHART: pythonchart
+  HELM_NAMESPACE: demochart
+ 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -66,8 +71,12 @@ jobs:
           push: true
           tags: |
             cicdpipeline.azurecr.io/python-imdb:${{ github.run_number }}
-      - name: Install Helm
-        run: |
-         curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+      - name: Setup Helm and Kubectl
+        uses: azure/setup-helm@v1
+        with:
+         version: 'v3.7.0'
+      - name: Install Helm Diff Plugin
+        run: helm plugin install https://github.com/databus23/helm-diff --version v3.1.3
+
 
 
