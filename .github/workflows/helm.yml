@@ -56,6 +56,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
+      - name: Install kubectl
+        uses: dawidd6/action-install-kubectl@v1
+
+      - name: Create Namespace
+        run: kubectl create namespace demochart
+      
       - name: Login to Azure Container Registry
         uses: azure/docker-login@v1
         with:
@@ -88,8 +94,8 @@ jobs:
          version: 'v3.7.0'
       - name: Install Helm Diff Plugin
         run: helm plugin install https://github.com/databus23/helm-diff --version v3.1.3
-      - name: Create Namespace
-        run: helm create namespace demochart
+#       - name: Create Namespace
+#         run: helm create namespace demochart
       - name: Upgrade Helm Chart
         run: |
           helm upgrade --install  --namespace ${{ env.HELM_NAMESPACE }} --set image.tag=latest  ${{ env.HELM_CHART }}  "/home/runner/work/ci-cd-sathish/ci-cd-sathish/pythonchart"
