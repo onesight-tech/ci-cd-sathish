@@ -69,7 +69,10 @@ jobs:
         with:
          kubeconfig: ${{ secrets.KUBECONFIG }}
          
-     
+      - name: Login to Azure
+        uses: Azure/login@v1
+        with:
+         creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Get AKS credentials
         run: az aks get-credentials --resource-group rg-cicdpipeline-eus-action --name aks-cluster-pipeline    
  #        
