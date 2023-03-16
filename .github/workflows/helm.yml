@@ -70,7 +70,12 @@ jobs:
           context: /home/runner/work/ci-cd-sathish/ci-cd-sathish/src #ci-cd_sathish two times mention pannaum
           push: true
           tags: |
-            cicdpipeline.azurecr.io/python:${{ github.run_number }}
+            cicdpipeline.azurecr.io/python:${{ github.run_number }}   
+        # docker image name = cicdpiipeline.azurecr.io
+        #acr repositor name = python
+        # tag = automatically increase
+        #   docker build -t cicdpipeline.azurecr.io/python:${{ github.run_number }} .
+        #   docker push cicdpipeline.azurecr.io/python:${{ github.run_number }}
       - name: Setup Helm and Kubectl
         uses: azure/setup-helm@v1
         with:
