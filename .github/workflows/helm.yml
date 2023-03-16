@@ -46,7 +46,7 @@ on:
 #       - main
  
 env:
-  KUBECONFIG: ${{ secrets.KUBECONFIG }}
+ # KUBECONFIG: ${{ secrets.KUBECONFIG }}
   HELM_CHART: pythonchart
   HELM_NAMESPACE: demochart
  
