@@ -56,8 +56,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
     #
+      - name: Set up Kubernetes environment
+        uses: azure/setup-kubernetes@v1
+        with:
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+
       - name: Create Namespace
-        run: kubectl create namespace demochart
+        run: kubectl create namespace my-namespace
+        
       - name: Login to Azure Container Registry
         uses: azure/docker-login@v1
         with:
